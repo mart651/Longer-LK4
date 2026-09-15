@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub Stampa 3D: Guida Longer LK4 & Network P2P</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome per Icone (No SVG inline) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 280px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 320px;
+            }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Chosen Palette: Warm Tech Slate & Amber Neutral -->
+    <!-- Application Structure Plan: Un'architettura a dashboard multi-sezione focalizzata sia sull'operatività hardware (Longer LK4) sia sui servizi di produzione diffusa (Stampa P2P). Strutturata in: 1. Overview & Statistiche, 2. Guida Tecnica & Manutenzione LK4 con wizard interattivo, 3. Architettura Hardware ed Esploso concettuale, 4. Hub Software & Driver con simulatore comandi G-code, 5. Directory P2P con filtri dinamici di sicurezza e costo, 6. Calcolatore & Advisor Materiali. -->
+    <!-- Visualization & Content Choices: Uso di Chart.js per la comparazione degli Slicer e dei livelli di protezione delle piattaforme. Componenti HTML/CSS dinamici per esploso dell'hotend, checklist di manutenzione reattiva e calcolatore decisionale dei filamenti. Zero grafica SVG pura e zero Mermaid JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500 flex items-center justify-center text-slate-900 font-bold text-xl shadow">
+                        <i class="fa-solid font-black">3D</i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-lg tracking-wide block leading-none">3D Maker Hub</span>
+                        <span class="text-xs text-slate-400">Guida LK4 & Rete Stampa P2P</span>
+                    </div>
+                </div>
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex space-x-1 text-sm font-medium">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-3 py-2 rounded-md transition text-amber-400 bg-slate-800">
+                        <i class="fa-solid fa-chart-pie mr-1"></i> Panoramica
+                    </button>
+                    <button onclick="switchTab('lk4-tech')" id="nav-lk4-tech" class="px-3 py-2 rounded-md transition text-slate-300 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-wrench mr-1"></i> Longer LK4 & Manutenzione
+                    </button>
+                    <button onclick="switchTab('hardware')" id="nav-hardware" class="px-3 py-2 rounded-md transition text-slate-300 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-layer-group mr-1"></i> Architettura & Esplosi
+                    </button>
+                    <button onclick="switchTab('software')" id="nav-software" class="px-3 py-2 rounded-md transition text-slate-300 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-laptop-code mr-1"></i> Software & Driver
+                    </button>
+                    <button onclick="switchTab('p2p-network')" id="nav-p2p-network" class="px-3 py-2 rounded-md transition text-slate-300 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-users-gear mr-1"></i> Stampa P2P (Privati)
+                    </button>
+                    <button onclick="switchTab('materials')" id="nav-materials" class="px-3 py-2 rounded-md transition text-slate-300 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-cube mr-1"></i> Materiali & Advisor
+                    </button>
+                </nav>
+                <!-- Mobile menu toggle -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-800 px-4 pt-2 pb-4 space-y-1">
+            <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Panoramica</button>
+            <button onclick="switchTab('lk4-tech'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Longer LK4 & Manutenzione</button>
+            <button onclick="switchTab('hardware'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Architettura & Esplosi</button>
+            <button onclick="switchTab('software'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Software & Driver</button>
+            <button onclick="switchTab('p2p-network'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Stampa P2P (Privati)</button>
+            <button onclick="switchTab('materials'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Materiali & Advisor</button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- SECTION 1: DASHBOARD / PANORAMICA -->
+        <section id="tab-dashboard" class="tab-content space-y-8">
+            <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
+                <div class="max-w-3xl">
+                    <span class="bg-amber-500/20 text-amber-300 text-xs font-semibold px-3 py-1 rounded-full border border-amber-500/30 uppercase tracking-wider">Centro Operativo FDM & P2P</span>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight">Portale Tecnico Stampa 3D & Servizi tra Privati</h1>
+                    <p class="text-slate-300 mt-3 text-base sm:text-lg leading-relaxed">
+                        Questa applicazione interattiva traduce e organizza tutte le risorse della stampante **Longer LK4** (setup, software, taratura, esplosi) e la guida completa per commissionare stampe 3D a **maker e amatori privati** in sicurezza.
+                    </p>
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <button onclick="switchTab('lk4-tech')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-4 py-2.5 rounded-xl transition shadow flex items-center space-x-2">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                            <span>Manutenzione LK4</span>
+                        </button>
+                        <button onclick="switchTab('p2p-network')" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-2">
+                            <i class="fa-solid fa-handshake"></i>
+                            <span>Trova un Maker Privato</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Metrics Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                    <div class="p-3 bg-amber-100 text-amber-600 rounded-lg text-2xl">
+                        <i class="fa-solid fa-cube"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Volume LK4</span>
+                        <div class="text-xl font-bold text-slate-800">220×220×250 mm</div>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                    <div class="p-3 bg-blue-100 text-blue-600 rounded-lg text-2xl">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Driver Seriale</span>
+                        <div class="text-xl font-bold text-slate-800">CH340 / CH341</div>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                    <div class="p-3 bg-emerald-100 text-emerald-600 rounded-lg text-2xl">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Pagamenti P2P</span>
+                        <div class="text-xl font-bold text-slate-800">PayPal Beni & Servizi</div>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                    <div class="p-3 bg-purple-100 text-purple-600 rounded-lg text-2xl">
+                        <i class="fa-solid fa-code-branch"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Firmware LK4</span>
+                        <div class="text-xl font-bold text-slate-800">Marlin v2.x / V3.0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dual Comparative Dashboard Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Chart 1: Slicer Features -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 mb-1">Confronto Funzionalità Software Slicer</h2>
+                        <p class="text-xs text-slate-500 mb-4">Valutazione delle prestazioni, facilità d'uso e gestione supporti per Longer LK4.</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="slicersChart"></canvas>
+                    </div>
+                </div>
+                <!-- Chart 2: P2P Platforms Breakdown -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 mb-1">Livello di Protezione & Copertura Piattaforme P2P</h2>
+                        <p class="text-xs text-slate-500 mb-4">Confronto tra garanzie di acquisto e capillarità dei maker amatoriali.</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="p2pChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: LONGER LK4 TECH & MAINTENANCE -->
+        <section id="tab-lk4-tech" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Guida Tecnica e Manutenzione: Longer LK4</h2>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                    La Longer LK4 (compatibile con Alfawise U30 ed affine a Ender 3) richiede una manutenzione periodica ed accurata per garantire tolleranze dimensionali costanti ed eliminare difetti come <em>stringing</em> o sotto-estrusione.
+                </p>
+
+                <!-- Interactive Bed Leveling Assistant -->
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="p-2 bg-amber-500 text-slate-950 rounded-lg font-bold"><i class="fa-solid fa-bullseye"></i></span>
+                        <h3 class="text-lg font-bold text-slate-800">Procedura Guidata: Livellamento del Piatto (Bed Leveling)</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div class="p-4 bg-white rounded-lg border border-slate-200">
+                            <span class="text-xs font-bold text-amber-600 uppercase">Fase 1</span>
+                            <h4 class="font-bold text-slate-800 mt-1">Preriscaldamento</h4>
+                            <p class="text-xs text-slate-500 mt-1">Impostare l'Hotend a 200°C e il Piatto a 60°C. La dilatazione termica altera le distanze reali.</p>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg border border-slate-200">
+                            <span class="text-xs font-bold text-amber-600 uppercase">Fase 2</span>
+                            <h4 class="font-bold text-slate-800 mt-1">Auto-Home Asse Z</h4>
+                            <p class="text-xs text-slate-500 mt-1">Eseguire l'Auto-Home da display per posizionare l'ugello al punto zero di calibrazione.</p>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg border border-slate-200">
+                            <span class="text-xs font-bold text-amber-600 uppercase">Fase 3</span>
+                            <h4 class="font-bold text-slate-800 mt-1">Test del Foglio (0.1mm)</h4>
+                            <p class="text-xs text-slate-500 mt-1">Posizionare un foglio sotto l'ugello sui 4 angoli. Ruotare le manopole finché non si sente attrito leggero.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-600">
+                        <span><i class="fa-solid fa-lightbulb text-amber-500 mr-2"></i> Suggerimento: Ripetere il giro dei 4 angoli almeno due volte poiché la regolazione di un angolo influisce su quello opposto.</span>
+                    </div>
+                </div>
+
+                <!-- Maintenance Interactive Checklist -->
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Checklist Manutenzione Ordinaria & Straordinaria</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Check 1 -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-white flex items-start space-x-3">
+                        <input type="checkbox" class="mt-1 h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded cursor-pointer">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">Tensione Cinghie Assi X e Y</h4>
+                            <p class="text-xs text-slate-500 mt-1">Le cinghie devono risuonare leggermente al tocco. Cinghie allentate causano cerchi ovalizzati e disallineamento dei layer.</p>
+                        </div>
+                    </div>
+                    <!-- Check 2 -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-white flex items-start space-x-3">
+                        <input type="checkbox" class="mt-1 h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded cursor-pointer">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">Regolazione Ruote Eccentriche V-Slot</h4>
+                            <p class="text-xs text-slate-500 mt-1">Verificare che il carrello Hotend e il piatto non abbiano gioco. Stringere i dadi eccentrici senza bloccare lo scorrimento.</p>
+                        </div>
+                    </div>
+                    <!-- Check 3 -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-white flex items-start space-x-3">
+                        <input type="checkbox" class="mt-1 h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded cursor-pointer">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">Lubrificazione Barra Trapezia Asse Z</h4>
+                            <p class="text-xs text-slate-500 mt-1">Pulire i residui di polvere e applicare grasso al litio o lubrificante PTFE secco sulla vite T8.</p>
+                        </div>
+                    </div>
+                    <!-- Check 4 -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-white flex items-start space-x-3">
+                        <input type="checkbox" class="mt-1 h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded cursor-pointer">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">Sostituzione Ugello Nozzle MK8 (230°C)</h4>
+                            <p class="text-xs text-slate-500 mt-1">Sostituire l'ugello da 0.4mm <strong>esclusivamente ad Hotend caldo</strong> (~230°C) per prevenire trafilamenti di plastica dalla filettatura.</p>
+                        </div>
+                    </div>
+                    <!-- Check 5 -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-white flex items-start space-x-3">
+                        <input type="checkbox" class="mt-1 h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded cursor-pointer">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">Taglio Tubo PTFE Bowden a 90°</h4>
+                            <p class="text-xs text-slate-500 mt-1">Assicurarsi che l'estremità del tubo PTFE sia tagliata perfettamente dritta e spinta a fondo contro il breaker termico per evitare clog.</p>
+                        </div>
+                    </div>
+                    <!-- Check 6 -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-white flex items-start space-x-3">
+                        <input type="checkbox" class="mt-1 h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded cursor-pointer">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">Pulizia Superficie Piatto con Alcol IPA</h4>
+                            <p class="text-xs text-slate-500 mt-1">Detergere la superficie in vetro o microforata a piatto freddo con Alcol Isopropilico per sgrassare la superficie di adesione.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: ARCHITECTURE & EXPLODED VIEWS -->
+        <section id="tab-hardware" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Architettura Hardware ed Esploso Concettuale</h2>
+                <p class="text-slate-600 text-sm mb-6">
+                    La Longer LK4 adotta un'architettura open-frame basata su profilati d'alluminio 20x20 e 20x40. Esplora le componenti chiave cliccando sulle relative schede.
+                </p>
+
+                <!-- Interactive Hotend / Components Architecture Visualizer -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Component Selection Panel -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Componenti Schematizzati</h3>
+                        <button onclick="showComponent('hotend')" id="comp-btn-hotend" class="w-full text-left p-3 rounded-xl border border-amber-500 bg-amber-50/50 font-bold text-slate-800 flex items-center justify-between">
+                            <span><i class="fa-solid fa-fire text-amber-600 mr-2"></i> 1. Gruppo Hotend MK8</span>
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                        <button onclick="showComponent('extruder')" id="comp-btn-extruder" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white font-bold text-slate-800 flex items-center justify-between">
+                            <span><i class="fa-solid fa-gear text-slate-600 mr-2"></i> 2. Estrusore Bowden NEMA 17</span>
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                        <button onclick="showComponent('board')" id="comp-btn-board" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white font-bold text-slate-800 flex items-center justify-between">
+                            <span><i class="fa-solid fa-microchip text-slate-600 mr-2"></i> 3. Elettronica 24V & Driver TMC</span>
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                        <button onclick="showComponent('frame')" id="comp-btn-frame" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white font-bold text-slate-800 flex items-center justify-between">
+                            <span><i class="fa-solid fa-ruler-combined text-slate-600 mr-2"></i> 4. Telaio & Barra Trapezia Z</span>
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- Interactive Display Detail Card -->
+                    <div class="lg:col-span-2 bg-slate-900 text-white p-6 rounded-xl flex flex-col justify-between relative overflow-hidden">
+                        <div id="component-detail-content">
+                            <!-- Hotend Content (Default) -->
+                            <div class="space-y-4">
+                                <span class="bg-amber-500 text-slate-950 font-bold text-xs px-2.5 py-1 rounded">Dettaglio Componente</span>
+                                <h3 class="text-2xl font-bold text-amber-400">Gruppo Hotend MK8 (24V)</h3>
+                                <p class="text-slate-300 text-sm leading-relaxed">
+                                    L'Hotend è il cuore di fusione della stampante. La Longer LK4 utilizza un blocchetto termico in alluminio abbinato ad un dissipatore lamellare anodizzato.
+                                </p>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mt-4">
+                                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                        <span class="text-amber-400 font-bold block">Dissipatore (Heat Sink)</span>
+                                        Raffreddato da ventola dedicata per prevenire il fenomeno dell'<em>heat creep</em>.
+                                    </div>
+                                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                        <span class="text-amber-400 font-bold block">Gola Termica (Heat Break)</span>
+                                        Filettatura M6 con tubicino interno in PTFE di guidafilo.
+                                    </div>
+                                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                        <span class="text-amber-400 font-bold block">Blocco Riscaldante</span>
+                                        Ospita cartuccia ceramica 24V/40W e termistore NTC 100K.
+                                    </div>
+                                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                        <span class="text-amber-400 font-bold block">Ugello Nozzle MK8</span>
+                                        Filettatura M6, foratura standard 0.4 mm per filamenti 1.75 mm.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Conceptual Visual Representation Block -->
+                        <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                            <span>Architettura standard MK8 compatibile Creality / Alfawise</span>
+                            <span class="text-amber-400 font-mono">Tensione Operativa: 24V DC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: SOFTWARE & DRIVERS -->
+        <section id="tab-software" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Ecosistema Software, Driver & Utility Windows</h2>
+                <p class="text-slate-600 text-sm mb-6">
+                    Per utilizzare al meglio la Longer LK4 su Windows occorre comprendere l'intera catena software: dal driver per il cavo USB agli slicer 3D, fino alle consolle di diagnostica serale G-code.
+                </p>
+
+                <!-- Software Workflow Steps -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 relative">
+                        <span class="w-6 h-6 bg-slate-800 text-white font-bold text-xs rounded-full flex items-center justify-center mb-2">1</span>
+                        <h4 class="font-bold text-slate-800 text-sm">Driver CH340</h4>
+                        <p class="text-xs text-slate-500 mt-1">Crea la porta seriale COM virtuale in Windows per collegare la stampante via USB.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 relative">
+                        <span class="w-6 h-6 bg-slate-800 text-white font-bold text-xs rounded-full flex items-center justify-center mb-2">2</span>
+                        <h4 class="font-bold text-slate-800 text-sm">Slicer (Cura/Orca)</h4>
+                        <p class="text-xs text-slate-500 mt-1">Converte il modello 3D (.STL/.3MF) in istruzioni coordinate G-code per la macchina.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 relative">
+                        <span class="w-6 h-6 bg-slate-800 text-white font-bold text-xs rounded-full flex items-center justify-center mb-2">3</span>
+                        <h4 class="font-bold text-slate-800 text-sm">Pronterface</h4>
+                        <p class="text-xs text-slate-500 mt-1">Utility di diagnostica per calibrazione PID, controllo motori e lettura parametri EEPROM.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 relative">
+                        <span class="w-6 h-6 bg-slate-800 text-white font-bold text-xs rounded-full flex items-center justify-center mb-2">4</span>
+                        <h4 class="font-bold text-slate-800 text-sm">VS Code + PlatformIO</h4>
+                        <p class="text-xs text-slate-500 mt-1">Ambiente di compilazione per aggiornare il firmware Marlin o Klipper sulla scheda madre.</p>
+                    </div>
+                </div>
+
+                <!-- Comprehensive Software Grid -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">Download Ufficiali e Utility Consigliate</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Driver CH340 -->
+                        <div class="p-4 border border-slate-200 rounded-xl bg-white flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-bold text-slate-800">Driver USB CH340 / CH341</h4>
+                                    <span class="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-0.5 rounded">Driver Windows</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-2">Ponte di comunicazione tra Windows e la scheda madre della Longer LK4 per abilitare la comunicazione seriale COM.</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Produttore: WCH</span>
+                                <a href="https://www.wch-ic.com/downloads/CH341SER_ZIP.html" target="_blank" class="text-amber-600 font-bold hover:underline">Download ZIP <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
+                            </div>
+                        </div>
+
+                        <!-- UltiMaker Cura -->
+                        <div class="p-4 border border-slate-200 rounded-xl bg-white flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-bold text-slate-800">UltiMaker Cura</h4>
+                                    <span class="text-xs bg-emerald-100 text-emerald-700 font-semibold px-2 py-0.5 rounded">Slicer Generale</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-2">Lo slicer open-source più diffuso. Calcola i percorsi ugello, inﬁll e strutture di supporto per la Longer LK4.</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Versione Standard</span>
+                                <a href="https://ultimaker.com/software/ultimaker-cura" target="_blank" class="text-amber-600 font-bold hover:underline">Sito Ufficiale <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
+                            </div>
+                        </div>
+
+                        <!-- OrcaSlicer -->
+                        <div class="p-4 border border-slate-200 rounded-xl bg-white flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-bold text-slate-800">OrcaSlicer</h4>
+                                    <span class="text-xs bg-purple-100 text-purple-700 font-semibold px-2 py-0.5 rounded">Slicer Avanzato</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-2">Include test di calibrazione integrati (flow rate, pressure advance), supporti ad albero ottimizzati e profili veloci.</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Open Source</span>
+                                <a href="https://github.com/SoftFever/OrcaSlicer/releases" target="_blank" class="text-amber-600 font-bold hover:underline">GitHub Releases <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
+                            </div>
+                        </div>
+
+                        <!-- Pronterface -->
+                        <div class="p-4 border border-slate-200 rounded-xl bg-white flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-bold text-slate-800">Pronterface / Printrun</h4>
+                                    <span class="text-xs bg-amber-100 text-amber-700 font-semibold px-2 py-0.5 rounded">Diagnostica G-code</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-2">Console per inviare singoli comandi G-code (M303 calibrazione PID, M500 salva EEPROM) e monitorare il grafico termico.</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Console Seriale</span>
+                                <a href="https://kliment.github.io/Printrun/" target="_blank" class="text-amber-600 font-bold hover:underline">Sito Ufficiale <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
+                            </div>
+                        </div>
+
+                        <!-- LONGER Official Portal -->
+                        <div class="p-4 border border-slate-200 rounded-xl bg-white flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-bold text-slate-800">Longer3D Official Download</h4>
+                                    <span class="text-xs bg-slate-100 text-slate-700 font-semibold px-2 py-0.5 rounded">Firmware Ufficiale</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-2">Pagina ufficiale del produttore per scaricare il manuale PDF originale, il firmware stock LK4 V3.0 e lo slicer presettato.</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Risorse Ufficiali</span>
+                                <a href="https://www.longer3d.com/pages/download-lk4" target="_blank" class="text-amber-600 font-bold hover:underline">Longer Download <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
+                            </div>
+                        </div>
+
+                        <!-- Visual Studio Code -->
+                        <div class="p-4 border border-slate-200 rounded-xl bg-white flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-bold text-slate-800">VS Code + PlatformIO</h4>
+                                    <span class="text-xs bg-indigo-100 text-indigo-700 font-semibold px-2 py-0.5 rounded">IDE Marlin</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-2">Ambiente di sviluppo indispensabile per chi intende ricompilare il codice sorgente Marlin 2.x per upgrades o BLTouch.</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Microsoft</span>
+                                <a href="https://code.visualstudio.com" target="_blank" class="text-amber-600 font-bold hover:underline">Download IDE <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive G-Code Quick Reference Tool -->
+                <div class="mt-8 bg-slate-900 text-slate-200 p-6 rounded-xl">
+                    <h3 class="text-lg font-bold text-amber-400 mb-2">Prontuario Comandi G-Code Essenziali (Pronterface)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono mt-4">
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                            <span class="text-amber-300 font-bold">M303 E0 S200 U1</span>
+                            <p class="text-slate-400 font-sans mt-1">Avvia l'autotuning PID dell'Hotend a 200°C e applica automaticamente i valori trovati.</p>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                            <span class="text-amber-300 font-bold">M500</span>
+                            <p class="text-slate-400 font-sans mt-1">Salva le impostazioni correnti e la calibrazione PID nella memoria EEPROM della Longer LK4.</p>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                            <span class="text-amber-300 font-bold">M503</span>
+                            <p class="text-slate-400 font-sans mt-1">Stampa in consolle tutti i parametri attualmente memorizzati (passi/mm motori, accelerazioni, PID).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: P2P PRINTING NETWORK (AMATORI E PRIVATI) -->
+        <section id="tab-p2p-network" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Piattaforme di Stampa 3D Peer-to-Peer (Tra Privati)</h2>
+                        <p class="text-slate-600 text-sm mt-1">
+                            Se non possiedi una stampante 3D o necessiti di materiali speciali senza ricorrere a service industriali costosi, puoi far realizzare i tuoi file .STL a maker ed amatori locali.
+                        </p>
+                    </div>
+                    <!-- Filter Toolbar -->
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Filtra:</span>
+                        <select id="p2p-filter" onchange="filterP2PPlatforms()" class="bg-slate-100 border border-slate-300 text-slate-800 text-xs rounded-lg p-2 focus:ring-amber-500 focus:border-amber-500">
+                            <option value="all">Tutte le Piattaforme</option>
+                            <option value="protected">Con Tutela Pagamento Integrata</option>
+                            <option value="local">Consegna a Mano / Locale</option>
+                            <option value="direct">Accordo Diretto Informale</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Interactive Platform Cards Grid -->
+                <div id="p2p-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Card 1: Reddit -->
+                    <div class="p2p-card p-5 border border-slate-200 rounded-xl bg-white flex flex-col justify-between shadow-sm hover:shadow-md transition" data-category="direct">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-bold text-lg text-slate-900">r/3Dprintmything</h3>
+                                <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded">Reddit Subreddit</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-4">Community internazionale peer-to-peer basata su annunci diretti tra utenti.</p>
+                            <ul class="text-xs text-slate-500 space-y-1.5 mb-4">
+                                <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> <strong>Come funziona:</strong> Pubblica post con tag geografico <code>[IT]</code> o <code>[EU]</code> e link al file 3D.</li>
+                                <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> <strong>Vantaggi:</strong> Molto economico, risposte rapide da appassionati.</li>
+                                <li><i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1.5"></i> <strong>Sicurezza:</strong> Verifica le risposte pubbliche prima della chat privata.</li>
+                            </ul>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Tutela: Concordata (PayPal)</span>
+                            <span class="text-slate-700 font-bold">Ambito: Globale / EU</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Treatstock -->
+                    <div class="p2p-card p-5 border border-slate-200 rounded-xl bg-white flex flex-col justify-between shadow-sm hover:shadow-md transition" data-category="protected">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-bold text-lg text-slate-900">Treatstock</h3>
+                                <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded">Marketplace Escrow</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-4">Piattaforma intermediaria tra privati, amatori e piccoli laboratori domestici.</p>
+                            <ul class="text-xs text-slate-500 space-y-1.5 mb-4">
+                                <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> <strong>Come funziona:</strong> Carica .STL/.3MF e confronta i prezzi instantanei dei maker vicini.</li>
+                                <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> <strong>Vantaggi:</strong> Sistema di pagamento protetto (rilasciato solo a consegna).</li>
+                                <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> <strong>Filtri:</strong> Per nazione, città e tecnologia (FDM/Resina).</li>
+                            </ul>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                            <span class="text-emerald-600 font-bold"><i class="fa-solid fa-shield"></i> Protezione Integrata</span>
+                            <a href="https://www.treatstock.com" target="_blank" class="text-amber-600 font-bold hover:underline">Treatstock.com</a>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Makexyz -->
+                    <div class="p2p-card p-5 border border-slate-200 rounded-xl bg-white flex flex-col justify-between shadow-sm hover:shadow-md transition" data-category="local">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-bold text-lg text-slate-900">Makexyz</h3>
+                                <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded">Geolocalizzato</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-4">Network su mappa per individuare possessori di stampanti 3D nelle vicinanze.</p>
+                            <ul class="text-xs text-slate-500 space-y-1.5 mb-4">
+                                <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> <strong>Come funziona:</strong> Inserisci la tua città per contattare direttamente i maker di zona.</li>
+                                <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> <strong>Vantaggi:</strong> Ideale per consegna a mano ed azzeramento spese di spedizione.</li>
+                            </ul>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Tutela: Gestita dal sito</span>
+                            <a href="https://www.makexyz.com" target="_blank" class="text-amber-600 font-bold hover:underline">Makexyz.com</a>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Subito / Etsy / Vinted -->
+                    <div class="p2p-card p-5 border border-slate-200 rounded-xl bg-white flex flex-col justify-between shadow-sm hover:shadow-md transition" data-category="protected">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-bold text-lg text-slate-900">Marketplace (Subito / Etsy / Vinted)</h3>
+                                <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded">Annunci Nazionali</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-4">Annunci e inserzioni personalizzate di <em>"Stampa 3D su richiesta"</em> pubblicate da amatori.</p>
+                            <ul class="text-xs text-slate-500 space-y-1.5 mb-4">
+                                <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> <strong>Come funziona:</strong> Invii il file via chat al venditore che crea un'inserzione ad hoc.</li>
+                                <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> <strong>Vantaggi:</strong> Tutele integrate dell'acquirente e resi gestiti dal marketplace.</li>
+                            </ul>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                            <span class="text-emerald-600 font-bold"><i class="fa-solid fa-shield"></i> Tutela Marketplace</span>
+                            <span class="text-slate-700 font-bold">Ambito: Italia</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Telegram & Facebook Groups -->
+                    <div class="p2p-card p-5 border border-slate-200 rounded-xl bg-white flex flex-col justify-between shadow-sm hover:shadow-md transition" data-category="direct local">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-bold text-lg text-slate-900">Telegram / Facebook</h3>
+                                <span class="bg-sky-100 text-sky-700 text-xs font-bold px-2 py-0.5 rounded">Community Italiane</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-4">Gruppi Telegram (es. <em>Help3D</em>, <em>Stampa 3D Italia</em>) e community di maker locali.</p>
+                            <ul class="text-xs text-slate-500 space-y-1.5 mb-4">
+                                <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> <strong>Come funziona:</strong> Chiedi in chat disponibilità di hobbisti nella tua zona.</li>
+                                <li><i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> <strong>Vantaggi:</strong> Informale, economico (spesso solo costo filamento + spedizione).</li>
+                            </ul>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Tutela: Accordo Privato</span>
+                            <span class="text-slate-700 font-bold">Ambito: Italia (Local)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Safety Protocol Box for P2P Transactions -->
+                <div class="mt-8 bg-amber-50 border border-amber-200 rounded-xl p-5">
+                    <h3 class="text-md font-bold text-amber-900 flex items-center">
+                        <i class="fa-solid fa-shield-cat mr-2 text-lg text-amber-600"></i>
+                        Vademecum di Sicurezza Prima di Inviare il File
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3 text-xs text-amber-950">
+                        <div>
+                            <strong>1. Formato File Adatto:</strong> Esporta sempre il modello 3D nei formati standard <code>.STL</code>, <code>.STEP</code> o <code>.3MF</code>.
+                        </div>
+                        <div>
+                            <strong>2. Specifiche Meccaniche:</strong> Informa il maker se l'oggetto dev'essere esposto ad UV, sforzi flessionali o temperature calde.
+                        </div>
+                        <div>
+                            <strong>3. Pagamenti Sicuri:</strong> Per accordi privati fuori da Treatstock o Etsy, usa sempre <strong>PayPal "Beni e Servizi"</strong> per tutelarti contro smarrimenti.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: MATERIALS & DECISION ADVISOR -->
+        <section id="tab-materials" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Guida Materiali & Calcolatore Decisionale</h2>
+                <p class="text-slate-600 text-sm mb-6">
+                    Seleziona l'utilizzo previsto per il tuo pezzo da stampare per scoprire il materiale termoplastico ottimale e i parametri consigliati.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Interactive Selector -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+                        <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Seleziona Caso d'Uso</h3>
+                        
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Destinazione d'uso:</label>
+                            <select id="use-case-select" onchange="updateMaterialAdvisor()" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs font-medium text-slate-800 focus:ring-amber-500">
+                                <option value="decorative">Prototipo Estetico / Soprammobile (Interni)</option>
+                                <option value="mechanical">Componente Meccanico Sotto Sforzo</option>
+                                <option value="outdoor">Pezzo per Esterno / Resistente UV e Acqua</option>
+                                <option value="flexible">Guarnizione / Cover Flessibile</option>
+                                <option value="miniature">Miniatura Alta Precisione / Dettagli Fini</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Infill Desiderato (Riempimento):</label>
+                            <input type="range" id="infill-range" min="10" max="100" step="5" value="20" oninput="updateInfillVal(this.value)" class="w-full accent-amber-500">
+                            <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                <span>10% (Leggero)</span>
+                                <span id="infill-val" class="font-bold text-amber-600">20%</span>
+                                <span>100% (Pieno)</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs text-slate-600 space-y-1">
+                            <div class="flex justify-between">
+                                <span>Ugello Consigliato:</span>
+                                <span class="font-bold text-slate-800">0.4 mm MK8</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Diametro Filamento:</span>
+                                <span class="font-bold text-slate-800">1.75 mm</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Material Advisor Recommendation Display -->
+                    <div class="lg:col-span-2 bg-slate-900 text-white p-6 rounded-xl flex flex-col justify-between">
+                        <div id="material-recommendation">
+                            <!-- Populated dynamically by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs border-t border-slate-800 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <span class="font-bold text-slate-200">Hub Tecnico Stampa 3D</span> &copy; 2026 — Documentazione Longer LK4 & Servizi P2P
+            </div>
+            <div class="flex space-x-4">
+                <button onclick="switchTab('lk4-tech')" class="hover:text-amber-400">Guida LK4</button>
+                <button onclick="switchTab('software')" class="hover:text-amber-400">Software Windows</button>
+                <button onclick="switchTab('p2p-network')" class="hover:text-amber-400">Network Privati</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // State Management
+        let currentTab = 'dashboard';
+        let slicersChartInstance = null;
+        let p2pChartInstance = null;
+
+        // Init on DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            updateMaterialAdvisor();
+        });
+
+        // Tab Switcher Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Update Header Nav Links Active state
+            const navIds = ['dashboard', 'lk4-tech', 'hardware', 'software', 'p2p-network', 'materials'];
+            navIds.forEach(id => {
+                const btn = document.getElementById(`nav-${id}`);
+                if (btn) {
+                    if (id === tabId) {
+                        btn.className = "px-3 py-2 rounded-md transition text-amber-400 bg-slate-800 font-bold";
+                    } else {
+                        btn.className = "px-3 py-2 rounded-md transition text-slate-300 hover:text-white hover:bg-slate-800 font-medium";
+                    }
+                }
+            });
+
+            currentTab = tabId;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Chart.js Initialization
+        function initCharts() {
+            // Chart 1: Slicers Comparison
+            const ctx1 = document.getElementById('slicersChart').getContext('2d');
+            slicersChartInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['UltiMaker Cura', 'OrcaSlicer', 'PrusaSlicer', 'Longer Slicer'],
+                    datasets: [
+                        {
+                            label: 'Facilità d\'Uso (1-10)',
+                            data: [9, 7, 8, 9],
+                            backgroundColor: 'rgba(245, 158, 11, 0.85)',
+                            borderColor: '#f59e0b',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Funzionalità Avanzate (1-10)',
+                            data: [8, 10, 9, 5],
+                            backgroundColor: 'rgba(59, 130, 246, 0.85)',
+                            borderColor: '#3b82f6',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: { font: { size: 10 } }
+                        },
+                        x: {
+                            ticks: { font: { size: 10 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed.y !== null) { label += context.parsed.y + '/10'; }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: P2P Platforms Protection & Reach
+            const ctx2 = document.getElementById('p2pChart').getContext('2d');
+            p2pChartInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Marketplace Escrow (Treatstock)', 'Subito / Etsy (Tutela Sito)', 'Community Reddit (r/3Dprintmything)', 'Gruppi Telegram/Facebook (Diretti)'],
+                    datasets: [{
+                        data: [35, 25, 25, 15],
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#a855f7',
+                            '#f97316',
+                            '#0ea5e9'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // Hardware Component Switcher
+        function showComponent(compId) {
+            const container = document.getElementById('component-detail-content');
+            const btns = ['hotend', 'extruder', 'board', 'frame'];
+            
+            btns.forEach(id => {
+                const btn = document.getElementById(`comp-btn-${id}`);
+                if (id === compId) {
+                    btn.className = "w-full text-left p-3 rounded-xl border border-amber-500 bg-amber-50/50 font-bold text-slate-800 flex items-center justify-between";
+                } else {
+                    btn.className = "w-full text-left p-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white font-bold text-slate-800 flex items-center justify-between";
+                }
+            });
+
+            let html = '';
+            if (compId === 'hotend') {
+                html = `
+                    <div class="space-y-4">
+                        <span class="bg-amber-500 text-slate-950 font-bold text-xs px-2.5 py-1 rounded">Dettaglio Componente</span>
+                        <h3 class="text-2xl font-bold text-amber-400">Gruppo Hotend MK8 (24V)</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            L'Hotend è l'unità di fusione termica. La LK4 monta una cartuccia da 24V 40W e termistore 100K NTC.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mt-4">
+                            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                <span class="text-amber-400 font-bold block">Dissipatore Anodizzato</span>
+                                Mantiene fredda la parte superiore prevenendo inceppamenti nel PTFE.
+                            </div>
+                            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                <span class="text-amber-400 font-bold block">Ugello Nozzle 0.4 mm</span>
+                                Standard MK8 M6 per estrusione di precisione con filamento 1.75mm.
+                            </div>
+                        </div>
+                    </div>`;
+            } else if (compId === 'extruder') {
+                html = `
+                    <div class="space-y-4">
+                        <span class="bg-amber-500 text-slate-950 font-bold text-xs px-2.5 py-1 rounded">Dettaglio Componente</span>
+                        <h3 class="text-2xl font-bold text-amber-400">Gruppo Estrusore Bowden</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Spinge il filamento di plastica attraverso il tubo PTFE fino all'Hotend. Motore Stepper NEMA 17 separato dal carrello per alleggerire la massa in movimento.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mt-4">
+                            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                <span class="text-amber-400 font-bold block">Ingranaggio Ottone/Acciaio</span>
+                                Esercita pressione sul filo tramite molla di tensionamento regolabile.
+                            </div>
+                            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                <span class="text-amber-400 font-bold block">Raccordo Pneumatico PC4-M6</span>
+                                Blocca saldamente il tubo Bowden PTFE per evitare giochi in retrattile.
+                            </div>
+                        </div>
+                    </div>`;
+            } else if (compId === 'board') {
+                html = `
+                    <div class="space-y-4">
+                        <span class="bg-amber-500 text-slate-950 font-bold text-xs px-2.5 py-1 rounded">Dettaglio Componente</span>
+                        <h3 class="text-2xl font-bold text-amber-400">Scheda Madre 24V & Driver TMC</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Scheda elettronica proprietaria Longer (32-bit / 8-bit) alimentata a 24V DC. Nelle versioni Pro/X integra driver TMC2208/2209 silenziati.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mt-4">
+                            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                <span class="text-amber-400 font-bold block">Chip USB CH340</span>
+                                Interfaccia di comunicazione seriale verso Windows per controllo USB.
+                            </div>
+                            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                <span class="text-amber-400 font-bold block">Sensore Fine Filamento</span>
+                                Mette in pausa la stampa in caso di esaurimento della rocchetta.
+                            </div>
+                        </div>
+                    </div>`;
+            } else if (compId === 'frame') {
+                html = `
+                    <div class="space-y-4">
+                        <span class="bg-amber-500 text-slate-950 font-bold text-xs px-2.5 py-1 rounded">Dettaglio Componente</span>
+                        <h3 class="text-2xl font-bold text-amber-400">Telaio Profilati & Barra T8 Z</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Struttura portante in estrusi di alluminio 2020 e 2040 con scorrimento su ruote in gomma V-Slot guidate da dadi eccentrici.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mt-4">
+                            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                <span class="text-amber-400 font-bold block">Vite Trapezia T8</span>
+                                Trasmette il moto verticale con precisione infinitesimale sull'asse Z.
+                            </div>
+                            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                <span class="text-amber-400 font-bold block">Piatto 220x220 mm</span>
+                                Riscaldato a 24V fino a 100°C con piano in vetro borosilicato.
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        // P2P Platform Dynamic Filter
+        function filterP2PPlatforms() {
+            const val = document.getElementById('p2p-filter').value;
+            const cards = document.querySelectorAll('.p2p-card');
+
+            cards.forEach(card => {
+                const cat = card.getAttribute('data-category');
+                if (val === 'all') {
+                    card.classList.remove('hidden');
+                } else if (cat.includes(val)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Infill Slider Display Update
+        function updateInfillVal(val) {
+            document.getElementById('infill-val').innerText = `${val}%`;
+            updateMaterialAdvisor();
+        }
+
+        // Material Advisor Logic
+        function updateMaterialAdvisor() {
+            const useCase = document.getElementById('use-case-select').value;
+            const infill = document.getElementById('infill-range').value;
+            const container = document.getElementById('material-recommendation');
+
+            let mat = {
+                name: 'PLA (Acido Polilattico)',
+                tempNozzle: '190°C - 210°C',
+                tempBed: '50°C - 60°C',
+                desc: 'Facilissimo da stampare, ideale per la Longer LK4. Ottima finitura superficiale e indeformabile.',
+                benefits: ['Nessun warping', 'Ecologico', 'Colori brillanti'],
+                caution: 'Bassa resistenza alle alte temperature (>55°C).'
+            };
+
+            if (useCase === 'mechanical') {
+                mat = {
+                    name: 'PETG (Polietilene Tereftalato)',
+                    tempNozzle: '230°C - 240°C',
+                    tempBed: '70°C - 80°C',
+                    desc: 'Elevata resistenza meccanica e tenacità agli urti. Perfetto per staffe e pezzi strutturali.',
+                    benefits: ['Resistenza meccanica', 'Ottima adesione tra layer', 'Tolleranza termica'],
+                    caution: 'Tende a creare filamenti (stringing); richiede buona retrattile.'
+                };
+            } else if (useCase === 'outdoor') {
+                mat = {
+                    name: 'PETG / ASA',
+                    tempNozzle: '235°C - 245°C',
+                    tempBed: '80°C',
+                    desc: 'Resistente ai raggio UV, all\'acqua e agli agenti atmosferici senza deformarsi al sole.',
+                    benefits: ['Resistenza UV', 'Impermeabile', 'Durevole all\'esterno'],
+                    caution: 'Necessita di piatto ben livellato ed alcol IPA per adesione.'
+                };
+            } else if (useCase === 'flexible') {
+                mat = {
+                    name: 'TPU (Poliuretano Termoplastico)',
+                    tempNozzle: '215°C - 225°C',
+                    tempBed: '50°C',
+                    desc: 'Filamento gommoso e flessibile. Ideale per guarnizioni, paraurti e custodie.',
+                    benefits: ['Elasticità elevata', 'Indistruttibile agli urti', 'Assorbe vibrazioni'],
+                    caution: 'Stampare a bassa velocità (20-30 mm/s) con estrusore Bowden.'
+                };
+            } else if (useCase === 'miniature') {
+                mat = {
+                    name: 'Resina UV (Stampa SLA/DLP)',
+                    tempNozzle: 'N/A (Fotopolimero)',
+                    tempBed: 'N/A',
+                    desc: 'Per miniature ed oggetti microscopici si raccomanda di commissionare la stampa ad un maker dotato di stampante a resina su Treatstock o Reddit.',
+                    benefits: ['Dettaglio infinitesimale', 'Superficie liscia senza layer lines'],
+                    caution: 'Richiede lavaggio in IPA e polimerizzazione UV.'
+                };
+            }
+
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-amber-500 text-slate-950 font-bold text-xs px-2.5 py-1 rounded">Raccomandazione Materiale</span>
+                        <span class="text-xs text-slate-400">Infill Selezionato: <strong class="text-amber-400">${infill}%</strong></span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-amber-400">${mat.name}</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">${mat.desc}</p>
+                    
+                    <div class="grid grid-cols-2 gap-3 text-xs bg-slate-800 p-3 rounded-lg border border-slate-700">
+                        <div>
+                            <span class="text-slate-400">Temp. Ugello (LK4):</span>
+                            <div class="font-bold text-white">${mat.tempNozzle}</div>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">Temp. Piatto (Bed):</span>
+                            <div class="font-bold text-white">${mat.tempBed}</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase">Punti di Forza:</span>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            ${mat.benefits.map(b => `<span class="bg-emerald-950/80 text-emerald-300 border border-emerald-800/50 px-2.5 py-1 rounded-full"><i class="fa-solid fa-check text-[10px] mr-1"></i> ${b}</span>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="pt-2 text-xs text-amber-300/90 italic">
+                        <i class="fa-solid fa-triangle-exclamation mr-1"></i> Note: ${mat.caution}
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
