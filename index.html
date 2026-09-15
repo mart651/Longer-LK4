@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hub Stampa 3D: Guida Longer LK4 & Network P2P</title>
+    <title>Hub Stampa 3D: Guida Longer LK4, Esplosi Ricambi & Network P2P</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome per Icone (No SVG inline) -->
@@ -40,8 +40,8 @@
 <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
 
     <!-- Chosen Palette: Warm Tech Slate & Amber Neutral -->
-    <!-- Application Structure Plan: Un'architettura a dashboard multi-sezione focalizzata sia sull'operatività hardware (Longer LK4) sia sui servizi di produzione diffusa (Stampa P2P). Strutturata in: 1. Overview & Statistiche, 2. Guida Tecnica & Manutenzione LK4 con wizard interattivo, 3. Architettura Hardware ed Esploso concettuale, 4. Hub Software & Driver con simulatore comandi G-code, 5. Directory P2P con filtri dinamici di sicurezza e costo, 6. Calcolatore & Advisor Materiali. -->
-    <!-- Visualization & Content Choices: Uso di Chart.js per la comparazione degli Slicer e dei livelli di protezione delle piattaforme. Componenti HTML/CSS dinamici per esploso dell'hotend, checklist di manutenzione reattiva e calcolatore decisionale dei filamenti. Zero grafica SVG pura e zero Mermaid JS. -->
+    <!-- Application Structure Plan: Architettura dashboard interattiva estesa in 6 sezioni: 1. Overview & Statistiche, 2. Guida Tecnica & Manutenzione LK4 con checklist reattiva, 3. Architettura Hardware, Esplosi & Catalogo Ricambi (BOM e Part Numbers con ricerca dinamica), 4. Hub Software & Driver Windows con consolle G-code, 5. Directory P2P con filtri di sicurezza e costo, 6. Calcolatore & Advisor Materiali. -->
+    <!-- Visualization & Content Choices: Grafici Chart.js per slicer e protezione P2P. Schede dinamiche per esploso hotend ed estrusore, catalogo interattivo ricambi con codici P/N ufficiali/compatibili, filtri di ricerca in JS per componenti hardware. Nessuna grafica SVG pura e nessun codice Mermaid JS. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <!-- Top Navigation Header -->
@@ -54,7 +54,7 @@
                     </div>
                     <div>
                         <span class="font-bold text-lg tracking-wide block leading-none">3D Maker Hub</span>
-                        <span class="text-xs text-slate-400">Guida LK4 & Rete Stampa P2P</span>
+                        <span class="text-xs text-slate-400">Guida LK4, Ricambi P/N & Stampa P2P</span>
                     </div>
                 </div>
                 <!-- Desktop Navigation Links -->
@@ -66,7 +66,7 @@
                         <i class="fa-solid fa-wrench mr-1"></i> Longer LK4 & Manutenzione
                     </button>
                     <button onclick="switchTab('hardware')" id="nav-hardware" class="px-3 py-2 rounded-md transition text-slate-300 hover:text-white hover:bg-slate-800">
-                        <i class="fa-solid fa-layer-group mr-1"></i> Architettura & Esplosi
+                        <i class="fa-solid fa-layer-group mr-1"></i> Esplosi & Part Numbers
                     </button>
                     <button onclick="switchTab('software')" id="nav-software" class="px-3 py-2 rounded-md transition text-slate-300 hover:text-white hover:bg-slate-800">
                         <i class="fa-solid fa-laptop-code mr-1"></i> Software & Driver
@@ -90,7 +90,7 @@
         <div id="mobile-menu" class="hidden md:hidden bg-slate-800 px-4 pt-2 pb-4 space-y-1">
             <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Panoramica</button>
             <button onclick="switchTab('lk4-tech'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Longer LK4 & Manutenzione</button>
-            <button onclick="switchTab('hardware'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Architettura & Esplosi</button>
+            <button onclick="switchTab('hardware'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Esplosi & Part Numbers</button>
             <button onclick="switchTab('software'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Software & Driver</button>
             <button onclick="switchTab('p2p-network'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Stampa P2P (Privati)</button>
             <button onclick="switchTab('materials'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-200 hover:bg-slate-700">Materiali & Advisor</button>
@@ -107,12 +107,12 @@
                     <span class="bg-amber-500/20 text-amber-300 text-xs font-semibold px-3 py-1 rounded-full border border-amber-500/30 uppercase tracking-wider">Centro Operativo FDM & P2P</span>
                     <h1 class="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight">Portale Tecnico Stampa 3D & Servizi tra Privati</h1>
                     <p class="text-slate-300 mt-3 text-base sm:text-lg leading-relaxed">
-                        Questa applicazione interattiva traduce e organizza tutte le risorse della stampante **Longer LK4** (setup, software, taratura, esplosi) e la guida completa per commissionare stampe 3D a **maker e amatori privati** in sicurezza.
+                        Questa applicazione interattiva traduce e organizza tutte le risorse della stampante **Longer LK4** (setup, software, taratura, esplosi, catalogo part number ricambi) e la guida completa per commissionare stampe 3D a **maker e amatori privati**.
                     </p>
                     <div class="mt-6 flex flex-wrap gap-3">
-                        <button onclick="switchTab('lk4-tech')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-4 py-2.5 rounded-xl transition shadow flex items-center space-x-2">
-                            <i class="fa-solid fa-screwdriver-wrench"></i>
-                            <span>Manutenzione LK4</span>
+                        <button onclick="switchTab('hardware')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-4 py-2.5 rounded-xl transition shadow flex items-center space-x-2">
+                            <i class="fa-solid fa-boxes-packing"></i>
+                            <span>Cerca Part Number Ricambi</span>
                         </button>
                         <button onclick="switchTab('p2p-network')" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-2">
                             <i class="fa-solid fa-handshake"></i>
@@ -153,11 +153,11 @@
                 </div>
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
                     <div class="p-3 bg-purple-100 text-purple-600 rounded-lg text-2xl">
-                        <i class="fa-solid fa-code-branch"></i>
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
                     </div>
                     <div>
-                        <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Firmware LK4</span>
-                        <div class="text-xl font-bold text-slate-800">Marlin v2.x / V3.0</div>
+                        <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Standard Ugello</span>
+                        <div class="text-xl font-bold text-slate-800">MK8 M6 (0.4mm)</div>
                     </div>
                 </div>
             </div>
@@ -278,19 +278,26 @@
             </div>
         </section>
 
-        <!-- SECTION 3: ARCHITECTURE & EXPLODED VIEWS -->
+        <!-- SECTION 3: ARCHITECTURE, EXPLODED VIEWS & SPARE PARTS CATALOG -->
         <section id="tab-hardware" class="tab-content hidden space-y-8">
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h2 class="text-2xl font-bold text-slate-900 mb-2">Architettura Hardware ed Esploso Concettuale</h2>
-                <p class="text-slate-600 text-sm mb-6">
-                    La Longer LK4 adotta un'architettura open-frame basata su profilati d'alluminio 20x20 e 20x40. Esplora le componenti chiave cliccando sulle relative schede.
-                </p>
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Architettura Hardware, Esplosi & Catalogo Ricambi</h2>
+                        <p class="text-slate-600 text-sm mt-1">
+                            Esplora l'esploso concettuale dei sottosistemi meccanici ed elettronici della Longer LK4 e consulta il catalogo interattivo dei componenti di ricambio con Part Number e compatibilità.
+                        </p>
+                    </div>
+                    <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full border border-amber-300 self-start md:self-auto">
+                        <i class="fa-solid fa-circle-info mr-1"></i> Compatibile Alfawise U30 / Ender 3
+                    </span>
+                </div>
 
                 <!-- Interactive Hotend / Components Architecture Visualizer -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
                     <!-- Component Selection Panel -->
                     <div class="space-y-3">
-                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Componenti Schematizzati</h3>
+                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Sottosistemi Esplosi</h3>
                         <button onclick="showComponent('hotend')" id="comp-btn-hotend" class="w-full text-left p-3 rounded-xl border border-amber-500 bg-amber-50/50 font-bold text-slate-800 flex items-center justify-between">
                             <span><i class="fa-solid fa-fire text-amber-600 mr-2"></i> 1. Gruppo Hotend MK8</span>
                             <i class="fa-solid fa-chevron-right text-xs"></i>
@@ -345,6 +352,48 @@
                             <span>Architettura standard MK8 compatibile Creality / Alfawise</span>
                             <span class="text-amber-400 font-mono">Tensione Operativa: 24V DC</span>
                         </div>
+                    </div>
+                </div>
+
+                <!-- SEARCHABLE SPARE PARTS CATALOG & PART NUMBERS TABLE -->
+                <div class="border-t border-slate-200 pt-8 space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">Catalogo Ricambi & Part Number (P/N)</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Cerca componenti di ricambio, codici identificativi e tolleranze elettromeccaniche per la manutenzione della Longer LK4.</p>
+                        </div>
+                        <!-- Search & Filter Inputs -->
+                        <div class="flex flex-col sm:flex-row items-center gap-2">
+                            <div class="relative w-full sm:w-64">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                                <input type="text" id="part-search" oninput="filterPartsTable()" placeholder="Cerca ricambio o P/N..." class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <select id="part-category-filter" onchange="filterPartsTable()" class="w-full sm:w-auto bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-lg p-2 focus:ring-amber-500">
+                                <option value="all">Tutte le Categorie</option>
+                                <option value="hotend">Hotend & Fusione</option>
+                                <option value="extruder">Estrusore & Trazione</option>
+                                <option value="motion">Meccanica, Cinghie & Assi</option>
+                                <option value="electronics">Elettronica & Sensori</option>
+                                <option value="bed">Piatto & Alimentazione</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Responsive Table -->
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm custom-scrollbar">
+                        <table class="w-full text-left text-xs text-slate-700">
+                            <thead class="bg-slate-900 text-white uppercase font-semibold text-[11px] tracking-wider">
+                                <tr>
+                                    <th class="px-4 py-3">Componente / Descrizione</th>
+                                    <th class="px-4 py-3">Part Number (P/N)</th>
+                                    <th class="px-4 py-3">Specifiche Tecniche</th>
+                                    <th class="px-4 py-3">Compatibilità / Note</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parts-table-body" class="divide-y divide-slate-200 bg-white">
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -704,10 +753,10 @@
     <footer class="bg-slate-900 text-slate-400 text-xs border-t border-slate-800 py-6 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
-                <span class="font-bold text-slate-200">Hub Tecnico Stampa 3D</span> &copy; 2026 — Documentazione Longer LK4 & Servizi P2P
+                <span class="font-bold text-slate-200">Hub Tecnico Stampa 3D</span> &copy; 2026 — Documentazione Longer LK4, Esplosi & Servizi P2P
             </div>
             <div class="flex space-x-4">
-                <button onclick="switchTab('lk4-tech')" class="hover:text-amber-400">Guida LK4</button>
+                <button onclick="switchTab('hardware')" class="hover:text-amber-400">Catalogo Ricambi P/N</button>
                 <button onclick="switchTab('software')" class="hover:text-amber-400">Software Windows</button>
                 <button onclick="switchTab('p2p-network')" class="hover:text-amber-400">Network Privati</button>
             </div>
@@ -721,9 +770,46 @@
         let slicersChartInstance = null;
         let p2pChartInstance = null;
 
+        // Spare Parts Database with Part Numbers (P/N)
+        const sparePartsData = [
+            // Hotend
+            { name: "Ugello Ottone MK8 0.4mm", category: "hotend", pn: "LK4-HOT-NZ04", specs: "Filettatura M6, Foratura 0.4mm, Filamento 1.75mm", compat: "Compatibile Creality Ender 3 / Alfawise U30" },
+            { name: "Blocco Riscaldante Alluminio", category: "hotend", pn: "LK4-HOT-HB24V", specs: "Dimensioni 20x20x10 mm, Filetto M6 per ugello e gola", compat: "Standard MK8 / CR-10" },
+            { name: "Cartuccia Riscaldante Ceramica", category: "hotend", pn: "LK4-ELE-HC24V40W", specs: "Tensione 24V DC, Potenza 40W, Cavo L=100cm", compat: "Origine Longer LK4 / Alfawise U30" },
+            { name: "Termistore NTC 100K 3950", category: "hotend", pn: "LK4-ELE-TH100K", specs: "Vetro NTC 100K ohm, Connettore 2-Pin XH2.54", compat: "Marlin Temp Sensor Type 1" },
+            { name: "Gola Termica (Heat Break) M6", category: "hotend", pn: "LK4-HOT-GBM6", specs: "Acciaio Inox M6x26mm, condotto interno PTFE 4.1mm", compat: "Per estrusione PLA/PETG senza clogging" },
+            { name: "Dissipatore Rosso Anodizzato", category: "hotend", pn: "LK4-HOT-HS01", specs: "Alluminio per gola M6, attacco raccordo pneumatic PC4", compat: "Longer LK4 / LK4 Pro / Alfawise U30" },
+            { name: "Calza in Silicone MK8", category: "hotend", pn: "LK4-HOT-SOC01", specs: "Isolante termico anti-radiazione fino a 280°C", compat: "Previene cali PID ventola layer" },
+
+            // Estrusore
+            { name: "Ingranaggio Ingranamento Ottone", category: "extruder", pn: "LK4-EXT-GR40T", specs: "40 Denti / Denti Fini, Foro D=5mm per alberino NEMA 17", compat: "Estrusore Bowden Stock LK4" },
+            { name: "Raccordo Pneumatico PC4-M6", category: "extruder", pn: "LK4-EXT-PC4M6", specs: "Filettatura M6 passo corto, tubo PTFE OD 4mm", compat: "Lato Estrusore & Hotend" },
+            { name: "Tubo PTFE Bowden Capricorn/Std", category: "extruder", pn: "LK4-EXT-PTFE1M", specs: "Diametro Esterno 4mm, Diametro Interno 2mm", compat: "Tolleranza stretta antifilamento" },
+            { name: "Motore Stepper Estrusore (E)", category: "extruder", pn: "LK4-MOT-N1740-E", specs: "NEMA 17 (42-40), Passo 1.8°, Corrente 1.5A", compat: "Albero D-Shape 5mm" },
+
+            // Meccanica & Assi
+            { name: "Cuscinetti V-Slot POM Gomma", category: "motion", pn: "LK4-MEC-POM625", specs: "Ruota in Polioximetilene con cuscinetto 625ZZ interno", compat: "Carrelli Assi X, Y e Z su profilati 2020/2040" },
+            { name: "Dado Eccentrico 8mm Hex", category: "motion", pn: "LK4-MEC-ECC8", specs: "Ottone/Acciaio foro eccentrico per registro giochi ruote", compat: "Slitte X, Y e piastra Z" },
+            { name: "Cinghia Dentata GT2 Assi X/Y", category: "motion", pn: "LK4-MEC-GT2-6", specs: "Passo 2mm, Larghezza 6mm, Rinforzata in fibra di vetro", compat: "Asse X (~780mm), Asse Y (~740mm)" },
+            { name: "Barra Trapezia T8 Asse Z", category: "motion", pn: "LK4-MEC-T8LEAD", specs: "Vite Acciaio L=350mm, Passo 2mm, Lead 8mm + Dado Ottone", compat: "Guida trasmissione verticale Asse Z" },
+            { name: "Motori Stepper Assi X/Y/Z", category: "motion", pn: "LK4-MOT-N1734-XYZ", specs: "NEMA 17 (42-34), Coppia elevata 0.4Nm", compat: "Standard Longer LK4" },
+
+            // Elettronica & Sensori
+            { name: "Scheda Madre Controller 24V", category: "electronics", pn: "LK4-BRD-V32", specs: "MCU 32-bit / 8-bit, Porta USB Seriale CH340, Input 24V", compat: "Firmware Marlin 2.x / LK4 Stock" },
+            { name: "Modulo Display Touch 2.8\"", category: "electronics", pn: "LK4-DSP-28T", specs: "Schermo Touchscreen a colori 2.8 pollici SPI", compat: "Interfaccia proprietaria Longer LK4" },
+            { name: "Sensore Fine Filamento", category: "electronics", pn: "LK4-SEN-FIL01", specs: "Switch meccanico 3-Pin con LED indicatore presenza filo", compat: "Pausa automatica stampa in caso di rottura" },
+            { name: "Finecorsa Meccanico (Endstop)", category: "electronics", pn: "LK4-SEN-END01", specs: "Microswitch meccanico con levetta in metallo 3-Pin", compat: "Azzeramento Home Assi X, Y, Z" },
+
+            // Piatto & Alimentazione
+            { name: "Alimentatore 24V 350W", category: "bed", pn: "LK4-PSU-24V350W", specs: "Input 110V/220V AC, Output 24V DC 14.6A (MeanWell Type)", compat: "Alimentazione ad alta stabilità termica" },
+            { name: "Piatto Riscaldato Alluminio 24V", category: "bed", pn: "LK4-BED-24V220", specs: "Superficie 220x220 mm, Potenza ~200W, Cavi silicone 14AWG", compat: "Raggiunge 100°C per PETG/ABS" },
+            { name: "Piano in Vetro Borosilicato", category: "bed", pn: "LK4-GLS-220", specs: "Spessore 3mm, 220x220 mm con rivestimento microforato", compat: "Adesione ad alta temperatura, distacco a freddo" }
+        ];
+
         // Init on DOM Content Loaded
         document.addEventListener('DOMContentLoaded', () => {
             initCharts();
+            renderPartsTable(sparePartsData);
             updateMaterialAdvisor();
         });
 
@@ -930,6 +1016,49 @@
                     </div>`;
             }
             container.innerHTML = html;
+        }
+
+        // Render Spare Parts Table
+        function renderPartsTable(data) {
+            const tbody = document.getElementById('parts-table-body');
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-6 text-center text-slate-400 italic">Nessun ricambio trovato con i filtri correnti.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(item => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="px-4 py-3 font-bold text-slate-800">
+                        ${item.name}
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="font-mono text-xs bg-slate-100 text-slate-800 px-2 py-0.5 rounded border border-slate-200 font-bold">${item.pn}</span>
+                    </td>
+                    <td class="px-4 py-3 text-slate-600">
+                        ${item.specs}
+                    </td>
+                    <td class="px-4 py-3 text-slate-500 italic">
+                        ${item.compat}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Filter Parts Table dynamically by Search Query and Category
+        function filterPartsTable() {
+            const query = document.getElementById('part-search').value.toLowerCase().trim();
+            const category = document.getElementById('part-category-filter').value;
+
+            const filtered = sparePartsData.filter(item => {
+                const matchesCategory = (category === 'all' || item.category === category);
+                const matchesQuery = item.name.toLowerCase().includes(query) || 
+                                     item.pn.toLowerCase().includes(query) || 
+                                     item.specs.toLowerCase().includes(query) ||
+                                     item.compat.toLowerCase().includes(query);
+                return matchesCategory && matchesQuery;
+            });
+
+            renderPartsTable(filtered);
         }
 
         // P2P Platform Dynamic Filter
